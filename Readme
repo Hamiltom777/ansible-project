@@ -1,0 +1,100 @@
+# Ansible Documentation 
+Playbook:
+Playbook is a .yaml file that defines which machine to be targeted, what task to be performed and in which order using data and variables.
+
+Basic structure of playbook:
+example for install nginx and start it,
+
+.yaml
+
+---
+-	name: install nginx and start
+hosts: web
+become: yes 		#this should be provided when we want to run the command from root privileges
+tasks:
+	- name: install nginx
+	  apt:
+		name: nginx
+		status: present
+		update_cache: yes
+	- name: start nginx
+	  Service:
+		name: start nginx
+		status: started
+		
+some keyworks and their functionalities:
+name – description to understand for what purpose the block of code Do
+
+
+
+
+
+
+Ansible roles:
+Roles help us to organize our playbooks by splitting them into reusable components. Each role has a standard directory structure, making it easy to manage tasks, variables, handlers, files, templates, and more.
+Task- It is the main file having all the main tasks to be execute like install, start server, copy, delete, etc.
+Handler – It defines the handler tasks that are execute only when notified 
+Default- Stores the default variables this are the lowest priority and can be overridden easily 
+	Example: server port of deployment
+Vars- It stores the highest priority variables that are hard to override
+Files- It stores the importance file like zip, text file , conf file that can be copied to the target machines. 
+Templates- stores the file template using Jinga2
+Meta- contains metadata of the roles. 
+
+    why do we use ansible role.
+ modularity: It allows us to break down the complex playbook into smaller, reusable components. Each role handles a specific part of the configuration.
+  Reusability: once created, roles can be reused across different playbooks and projects. This saves time and effort in writing redundant code.
+  
+
+Command for the role.
+  		(-ansible-galaxy role init <name>)
+	Ansible-galaxy role init assignemt3
+
+write the task inside the main.yaml
+tasks:
+	-name: Install apache 
+	 ansible.builtin.apt:
+	name: apache2
+	status: present
+	update_chache: yes
+-	name: copy file with owner permission
+ansible.buildin.copy:
+	src: index.html
+	dest: /var/www/html
+	owner: root
+	group: root
+	mode: ‘0644’
+this is a main.yaml file inside the task, for installing apache and copying the file to the files folder of the role
+
+then what to do is just change the playbook file by removing the task section, 
+(if any other section are present we can write them separately
+
+Then in the playbook file we need to add the line 
+
+---
+-	hosts: all
+become: true
+roles:
+	-assignemt3 
+		#folder name that have been created 
+
+Now push the code to the git hub 
+cd assignemt3
+git init
+git remote add origin https://github.com/Basannagouda/first/assignment3
+git add.
+git commit -m “first commit for the role”
+git push -u origin main
+
+**First we have to create a repo in the github then push to it.
+
+ 
+
+
+Ansible galaxy:
+Ansible Galaxy is a community hub where we can download, share, and publish roles and collections made by other users and publish the roles we have created within the organization and to the public.
+To install the roles from the ansible 
+-	ansible-galaxy role install <name of the role >
+to check the installation 
+
+-	ls ~/. ansible/roles
